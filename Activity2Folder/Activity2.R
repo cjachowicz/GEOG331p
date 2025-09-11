@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #################################
 ######  GEOG331 Activity2  ######
 #################################
@@ -54,3 +55,8 @@ datW <- read.csv("G:\\My Drive\\Documents\\teaching\\GEOG331\\data\\noaa_weather
 # Here is my Mac file path
 #datW <- read.csv("/Volumes/GoogleDrive/My Drive/Documents/teaching/GEOG331/F20/data/noaa_weather/2011124.csv")
 
+=======
+ #dog
+
+#another change1
+>>>>>>> 8af42b116938b3d3f46f1f932e128db06abe1ba3
