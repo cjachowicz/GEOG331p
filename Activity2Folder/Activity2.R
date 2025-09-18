@@ -49,14 +49,13 @@ Mat.bycol[,2]
 #read in weather station file from your data folder
 
 # Here is my PC file path - note my data folder is on Google Drive, so I can access it from multiple computers
-datW <- read.csv("G:\\My Drive\\Documents\\teaching\\GEOG331\\data\\noaa_weather\\2011124.csv",
+datW <- read.csv("Z:\\cjachowicz\\data\\noaa_weather\\2011124", 
                  stringsAsFactors = T)
 
 # Here is my Mac file path
 #datW <- read.csv("/Volumes/GoogleDrive/My Drive/Documents/teaching/GEOG331/F20/data/noaa_weather/2011124.csv")
 
-=======
+#=======
  #dog
 
 #another change1
->>>>>>> 8af42b116938b3d3f46f1f932e128db06abe1ba3
