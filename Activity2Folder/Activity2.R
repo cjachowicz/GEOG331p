@@ -350,7 +350,7 @@ print(yearlyPercip)
 
 #Choose one site and create histogram of the data:
 colnames(yearlyPercip) <- c("NAME","Year","Precipitation")
-class(yearlyPercip$Precipitation)
+#class(yearlyPercip$Precipitation)
 
 hist(yearlyPercip$Precipitation[yearlyPercip$NAME == levels(datW$NAME)[4]],
      freq=FALSE, 
@@ -360,9 +360,16 @@ hist(yearlyPercip$Precipitation[yearlyPercip$NAME == levels(datW$NAME)[4]],
      col="grey50",
      border="white")
 
-#mean annual precipitation for each site:
+#mean annual precipitation for each site: (mm)
 mean(yearlyPercip$Precipitation[yearlyPercip$NAME=="ABERDEEN, WA US"], na.rm=TRUE)
-mean(yearlyPercip$Precipitation[yearlyPercip$NAME=="ABERDEEN, WA US"], na.rm=TRUE)
-mean(yearlyPercip$Precipitation[yearlyPercip$NAME=="ABERDEEN, WA US"], na.rm=TRUE)
-mean(yearlyPercip$Precipitation[yearlyPercip$NAME=="ABERDEEN, WA US"], na.rm=TRUE)
-mean(yearlyPercip$Precipitation[yearlyPercip$NAME=="ABERDEEN, WA US"], na.rm=TRUE)
+mean(yearlyPercip$Precipitation[yearlyPercip$NAME=="LIVERMORE, CA US"], na.rm=TRUE)
+mean(yearlyPercip$Precipitation[yearlyPercip$NAME=="MANDAN EXPERIMENT STATION, ND US"], na.rm=TRUE)
+mean(yearlyPercip$Precipitation[yearlyPercip$NAME=="MORMON FLAT, AZ US"], na.rm=TRUE)
+mean(yearlyPercip$Precipitation[yearlyPercip$NAME=="MORRISVILLE 6 SW, NY US"], na.rm=TRUE)
+
+#mean annual temperatures for each cite: (degrees C)
+mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE)
+mean(datW$TAVE[datW$siteN == 2],na.rm=TRUE)
+mean(datW$TAVE[datW$siteN == 3],na.rm=TRUE)
+mean(datW$TAVE[datW$siteN == 4],na.rm=TRUE)
+mean(datW$TAVE[datW$siteN == 5],na.rm=TRUE)
