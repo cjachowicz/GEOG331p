@@ -52,13 +52,6 @@ Mat.bycol[,2]
 datW <- read.csv("Z:\\cjachowicz\\data\\noaa_weather\\2011124.csv", 
                  stringsAsFactors = T)
 
-datW <- read.csv("Z:\\cjachowicz\\data\\noaa_weather\\2011124.csv", 
-                 stringsAsFactors = T)
-
-
-# Here is my Mac file path
-#datW <- read.csv("/Volumes/GoogleDrive/My Drive/Documents/teaching/GEOG331/F20/data/noaa_weather/2011124.csv")
-
 #get more information about the dataframe
 str(datW)
 
@@ -171,19 +164,13 @@ hist(datW$TAVE[datW$siteN == 2],
      ylab="Relative frequency",
      col="grey50",
      border="white")
-#add mean line with red (tomato3) color
-#and thickness of 3
 abline(v = mean(datW$TAVE[datW$siteN == 2],na.rm=TRUE), 
        col = "tomato",
        lwd = 3)
-#add standard deviation line below the mean with red (tomato3) color
-#and thickness of 3
 abline(v = mean(datW$TAVE[datW$siteN == 2],na.rm=TRUE) - sd(datW$TAVE[datW$siteN == 2],na.rm=TRUE), 
        col = "tomato4", 
        lty = 3,
        lwd = 3)
-#add standard deviation line above the mean with red (tomato3) color
-#and thickness of 3
 abline(v = mean(datW$TAVE[datW$siteN == 2],na.rm=TRUE) + sd(datW$TAVE[datW$siteN == 2],na.rm=TRUE), 
        col = "tomato2", 
        lty = 3,
@@ -200,19 +187,13 @@ hist(datW$TAVE[datW$siteN == 3],
      ylab="Relative frequency",
      col="grey50",
      border="white")
-#add mean line with red (tomato3) color
-#and thickness of 3
 abline(v = mean(datW$TAVE[datW$siteN == 3],na.rm=TRUE), 
        col = "firebrick1",
        lwd = 3)
-#add standard deviation line below the mean with red (tomato3) color
-#and thickness of 3
 abline(v = mean(datW$TAVE[datW$siteN == 3],na.rm=TRUE) - sd(datW$TAVE[datW$siteN == 3],na.rm=TRUE), 
        col = "darkgreen", 
        lty = 3,
        lwd = 3)
-#add standard deviation line above the mean with red (tomato3) color
-#and thickness of 3
 abline(v = mean(datW$TAVE[datW$siteN == 3],na.rm=TRUE) + sd(datW$TAVE[datW$siteN == 3],na.rm=TRUE), 
        col = "deeppink3", 
        lty = 3,
@@ -229,19 +210,13 @@ hist(datW$TAVE[datW$siteN == 5],
      ylab="Relative frequency",
      col="grey50",
      border="white")
-#add mean line with red (tomato3) color
-#and thickness of 3
 abline(v = mean(datW$TAVE[datW$siteN == 5],na.rm=TRUE), 
        col = "steelblue2",
        lwd = 3)
-#add standard deviation line below the mean with red (tomato3) color
-#and thickness of 3
 abline(v = mean(datW$TAVE[datW$siteN == 5],na.rm=TRUE) - sd(datW$TAVE[datW$siteN == 5],na.rm=TRUE), 
        col = "lawngreen", 
        lty = 3,
        lwd = 3)
-#add standard deviation line above the mean with red (tomato3) color
-#and thickness of 3
 abline(v = mean(datW$TAVE[datW$siteN == 5],na.rm=TRUE) + sd(datW$TAVE[datW$siteN == 5],na.rm=TRUE), 
        col = "cyan2", 
        lty = 3,
@@ -258,19 +233,13 @@ hist(datW$TAVE[datW$siteN == 4],
      ylab="Relative frequency",
      col="grey50",
      border="white")
-#add mean line with red (tomato3) color
-#and thickness of 3
 abline(v = mean(datW$TAVE[datW$siteN == 4],na.rm=TRUE), 
        col = "navyblue",
        lwd = 3)
-#add standard deviation line below the mean with red (tomato3) color
-#and thickness of 3
 abline(v = mean(datW$TAVE[datW$siteN == 4],na.rm=TRUE) - sd(datW$TAVE[datW$siteN == 4],na.rm=TRUE), 
        col = "mediumslateblue", 
        lty = 3,
        lwd = 3)
-#add standard deviation line above the mean with red (tomato3) color
-#and thickness of 3
 abline(v = mean(datW$TAVE[datW$siteN == 4],na.rm=TRUE) + sd(datW$TAVE[datW$siteN == 4],na.rm=TRUE), 
        col = "maroon2", 
        lty = 3,
@@ -350,3 +319,50 @@ qnorm(0.95,
 1 - pnorm(18.51026,
       mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE) + 4,
       sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
+
+#hist(datW$PRCP[datW$siteN==1])
+#histogram of average rainfall for just Aberdeen, WA
+hist(datW$PRCP[datW$siteN==1],
+     freq=FALSE, 
+     main = paste(levels(datW$NAME)[1]),
+     xlab = "Average daily percipitation (mm)", 
+     ylab="Relative frequency",
+     col="grey50",
+     border="white")
+abline(v = mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE), 
+       col = "olivedrab2",
+       lwd = 3)
+abline(v = mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE) - sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE), 
+       col = "purple", 
+       lty = 3,
+       lwd = 3)
+abline(v = mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE) + sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE), 
+       col = "purple", 
+       lty = 3,
+       lwd = 3)
+
+#sum precipitation for each year and site in the data
+#annual_datWprcp <- aggregate(PRCP ~ year, data = datW, sum, na.rm = TRUE)
+#print(annual_prcp)
+
+yearlyPercip <- aggregate(datW$PRCP, by=list(datW$NAME, datW$year), FUN="sum",na.rm=TRUE)
+print(yearlyPercip)
+
+#Choose one site and create histogram of the data:
+colnames(yearlyPercip) <- c("NAME","Year","Precipitation")
+class(yearlyPercip$Precipitation)
+
+hist(yearlyPercip$Precipitation[yearlyPercip$NAME == levels(datW$NAME)[4]],
+     freq=FALSE, 
+     main = paste(levels(datW$NAME)[4]),
+     xlab = "Annual precipittion (mm)", 
+     ylab="Relative frequency",
+     col="grey50",
+     border="white")
+
+#mean annual precipitation for each site:
+mean(yearlyPercip$Precipitation[yearlyPercip$NAME=="ABERDEEN, WA US"], na.rm=TRUE)
+mean(yearlyPercip$Precipitation[yearlyPercip$NAME=="ABERDEEN, WA US"], na.rm=TRUE)
+mean(yearlyPercip$Precipitation[yearlyPercip$NAME=="ABERDEEN, WA US"], na.rm=TRUE)
+mean(yearlyPercip$Precipitation[yearlyPercip$NAME=="ABERDEEN, WA US"], na.rm=TRUE)
+mean(yearlyPercip$Precipitation[yearlyPercip$NAME=="ABERDEEN, WA US"], na.rm=TRUE)
