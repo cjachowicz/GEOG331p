@@ -22,6 +22,7 @@ assert(length(a) == length(b), "error: unequal length") #=TRUE
 assert(length(a) == length(c), "error: lists are of unequal length") #=FALSE
 assert(length(c) == length(b), "not an arror: error") #=FALSE
 
+
 #############Question 1#############
 #############Question 2#############
 
@@ -45,6 +46,7 @@ print(sensorInfo)
 colnames(datW) <-   colnames(sensorInfo)
 #preview data
 print(datW[1,])
+
 
 #############Question 3#############
 
@@ -117,6 +119,7 @@ datW[datW$air.tempQ1 < 8,]
 #look at days with really high air temperature
 datW[datW$air.tempQ1 > 33,]  
 
+
 #############Question 4#############
 
 #plot precipitation and lightning strikes on the same plot
@@ -135,6 +138,7 @@ points(datW$DD[datW$precipitation > 0], datW$precipitation[datW$precipitation > 
 points(datW$DD[lightscale > 0], lightscale[lightscale > 0],
        col= "tomato3", pch=19)
 
+
 #############Question 5#############
 
 #filter out storms in wind and air temperature measurements
@@ -143,14 +147,36 @@ points(datW$DD[lightscale > 0], lightscale[lightscale > 0],
 datW$air.tempQ2 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0, NA,
                           ifelse(datW$precipitation > 5, NA, datW$air.tempQ1))
 
+
 #############Question 6#############
 
+#Remove any suspect data measurements from wind measurements
+datW$wind.speedQ1 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0, NA,
+                          ifelse(datW$precipitation > 5, NA, datW$wind.speed))
+#Check that all suspect measurements (precipitation >= 2 and some lightning activity) are in fact NA (na).
+assert(all(is.na(datW$wind.speedQ1[datW$precipitation  >= 2 & datW$lightning.acvitivy >0])), "wrong")
+#Check that all suspect measurements (precipitation > 5) are in fact NA (na).
+assert(all(is.na(datW$wind.speedQ1[datW$precipitation > 5])),"not filtered")
 
+#Plot all valid wind speed measurements using wind.speedQ1:
+plot(datW$DD , datW$wind.speedQ1, xlab = "Day of Year", ylab = "Filtered Wind Speed",
+     type="n")
+lines(datW$DD, datW$wind.speed)
+point_NA <- datW$wind.speedQ1 
 
+length(datW$DD)
+length(datW$wind.speedQ1[point_NA])
 
+points(datW$DD[point_NA],datW$wind.speedQ1[point_NA],col= "tomato4", pch=19)
 
+point_NA <- is.na(datW$wind.speedQ1)
 
+# Check lengths (optional)
+length(datW$DD)
+length(datW$wind.speedQ1[point_NA])
 
-
+# Add points only for non-NA values
+points(datW$DD[point_NA], datW$wind.speedQ1[point_NA], col = "tomato4", pch = 19)
+#############Question 7#############
 
 
