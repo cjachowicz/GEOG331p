@@ -127,7 +127,7 @@ datW[datW$air.tempQ1 > 33,]
 lightscale <- (max(datW$precipitation)/max(datW$lightning.acvitivy)) * datW$lightning.acvitivy
 #make the plot with precipitation and lightning activity marked
 #make it empty to start and add in features
-plot(datW$DD , datW$precipitation, xlab = "Day of Year", ylab = "Precipitation & lightning",
+plot(datW$DD , datW$precipitation, xlab = "Day of Year", ylab = "Precipitation & Lightning",
      type="n")
 #plot precipitation points only when there is precipitation 
 #make the points semi-transparent
@@ -158,25 +158,117 @@ assert(all(is.na(datW$wind.speedQ1[datW$precipitation  >= 2 & datW$lightning.acv
 #Check that all suspect measurements (precipitation > 5) are in fact NA (na).
 assert(all(is.na(datW$wind.speedQ1[datW$precipitation > 5])),"not filtered")
 
+#compares totals of NA values of wind speed to NA values of air temp
+assert(all(is.na(datW$wind.speedQ1) == is.na(datW$air.tempQ2)), "Not correct buddy")
+
 #Plot all valid wind speed measurements using wind.speedQ1:
 plot(datW$DD , datW$wind.speedQ1, xlab = "Day of Year", ylab = "Filtered Wind Speed",
      type="n")
+
+#Add lines to the graph
 lines(datW$DD, datW$wind.speed)
+
+#Add individual points to the graph
+points(datW$DD, datW$wind.speed, col = "turquoise2")
 point_NA <- datW$wind.speedQ1 
 
+#Check length of data because why not
 length(datW$DD)
 length(datW$wind.speedQ1[point_NA])
 
-points(datW$DD[point_NA],datW$wind.speedQ1[point_NA],col= "tomato4", pch=19)
 
-point_NA <- is.na(datW$wind.speedQ1)
-
-# Check lengths (optional)
-length(datW$DD)
-length(datW$wind.speedQ1[point_NA])
-
-# Add points only for non-NA values
-points(datW$DD[point_NA], datW$wind.speedQ1[point_NA], col = "tomato4", pch = 19)
 #############Question 7#############
+par(mfrow = c(2, 1))
+#soil moisture plot
+plot(datW$DD , datW$precipitation, xlab = "Day of Year", ylab = "Precipitation & Soil Moisture",
+     type="n",
+     ylim = c(0, 5.5))
+
+#Plot every point during precipitation 
+#Create index for data with precipitation
+precipitation_idx <- datW$precipitation > 0
+points(datW$DD[precipitation_idx], datW$precipitation[precipitation_idx],
+       col= "green4", pch=19)        
+
+#Plot points with at least some soil moisture. x = Day of moisture, y = Measurement of moisture     
+#create data with only moisture measurements to index:
+moisture_idx <- datW$soil.moisture > 0
+points(datW$DD[moisture_idx], datW$soil.moisture[moisture_idx], col = "turquoise3", pch = 15)
+
+#soil temperature plot
+plot(datW$DD , datW$air.tempQ2, xlab = "Day of Year", ylab = "Air Temp and Soil Temp in Degrees C",
+     type="n")
+
+#plot only when there is air temp
+air_temp <- datW$air.tempQ2 > 0
+points(datW$DD[air_temp], datW$air.tempQ2[air_temp],
+       col= "grey49", pch=15)        
+
+#plot only when there is soil temp
+#soil temp index where temp is greater than 0
+soil_temp <- datW$soil.temp > 0
+points(datW$DD[soil_temp], datW$soil.temp[soil_temp],
+       col= "red4", pch=19)
+
+
+#############Question 8#############
+
+#Calculate each average. Draw from complete data set. Not including NA values.
+air_avg <- mean(datW$air.tempQ2, na.rm=TRUE)
+wind_avg <- mean(datW$wind.speed, na.rm=TRUE)
+soil_temp_avg <- mean(datW$soil.temp, na.rm=TRUE)
+soil_moist_avg <- mean(datW$soil.moisture, na.rm=TRUE)
+precipitation_avg <- mean(datW$precipitation, na.rm=TRUE)
+
+#Check work
+print(air_avg)
+print(wind_avg)
+print(soil_temp_avg)
+print(soil_moist_avg)
+print(precipitation_avg)
+
+#Calculate total for each observation
+total_air <- sum(!is.na(datW$air.temperature))
+total_wind <- sum(!is.na(datW$wind.speed))
+total_soil_temp <- sum(!is.na(datW$soil.temp))
+total_soil_moist <- sum(!is.na(datW$soil.moisture))
+total_precipitation <- sum(!is.na(datW$precipitation))
+
+#Check work
+print(total_air)
+print(total_wind)
+print(total_soil_temp)
+print(total_soil_moist)
+print(total_precipitation)
+
+#create a table with average air temp, wind speed, soil moisture, and soil temp
+average_table <- data.frame("Observation Items"       = (c("Air Temperature","Wind Speed","Soil Moisture","Soil Temperature","Precipitation")),
+                            "Observation Averages"    = (c(air_avg,wind_avg,soil_temp_avg,soil_moist_avg,precipitation_avg)),
+                            "Cumulative Observations" = (c(total_air,total_wind,total_soil_temp,total_soil_moist,total_precipitation)))
+
+#total observations going into the calculations:
+total_totals <- sum(total_air,total_wind,total_soil_temp,total_soil_moist,total_precipitation)
+print(total_totals)
+
+#############Question 9#############
+
+#allows 4 plots to appear in a 2x2 formation
+par(mfrow = c(2, 2))
+
+#the same x axis range for each plot will be the standard day of year range used so far
+
+plot(datW$DD, datW$air.temperature, type="b",)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
