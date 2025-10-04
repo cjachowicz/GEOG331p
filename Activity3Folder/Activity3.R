@@ -136,7 +136,7 @@ points(datW$DD[datW$precipitation > 0], datW$precipitation[datW$precipitation > 
 
 #plot lightning points only when there is lightning     
 points(datW$DD[lightscale > 0], lightscale[lightscale > 0],
-       col= "tomato3", pch=19)
+       col= "rosybrown2", pch=19)
 
 
 #############Question 5#############
@@ -215,7 +215,7 @@ points(datW$DD[soil_temp], datW$soil.temp[soil_temp],
 
 #Calculate each average. Draw from complete data set. Not including NA values.
 air_avg <- mean(datW$air.tempQ2, na.rm=TRUE)
-wind_avg <- mean(datW$wind.speed, na.rm=TRUE)
+wind_avg <- mean(datW$wind.speedQ1, na.rm=TRUE)
 soil_temp_avg <- mean(datW$soil.temp, na.rm=TRUE)
 soil_moist_avg <- mean(datW$soil.moisture, na.rm=TRUE)
 precipitation_avg <- mean(datW$precipitation, na.rm=TRUE)
@@ -228,8 +228,8 @@ print(soil_moist_avg)
 print(precipitation_avg)
 
 #Calculate total for each observation
-total_air <- sum(!is.na(datW$air.temperature))
-total_wind <- sum(!is.na(datW$wind.speed))
+total_air <- sum(!is.na(datW$air.tempQ2))
+total_wind <- sum(!is.na(datW$wind.speedQ1))
 total_soil_temp <- sum(!is.na(datW$soil.temp))
 total_soil_moist <- sum(!is.na(datW$soil.moisture))
 total_precipitation <- sum(!is.na(datW$precipitation))
@@ -257,18 +257,20 @@ par(mfrow = c(2, 2))
 
 #the same x axis range for each plot will be the standard day of year range used so far
 
-plot(datW$DD, datW$air.temperature, type="b",)
+#Plot for Air Temperature:
+plot(datW$DD, datW$air.tempQ2, xlab = "Day of Year", ylab = "Air Temp in Degrees C",
+     type="b", col= "red2", pch=15)
 
+#Plot for Precipitation:
+plot(datW$DD, datW$precipitation, xlab = "Day of Year", ylab = "Precipitation in mm",
+     type="b", col= "orange1", pch=15)
 
+#Plot for Soil Moisture:
+plot(datW$DD, datW$soil.temp, xlab = "Day of Year", ylab = "Soil Moisture in (Meters^3 / Meter^3)",
+     type="b", col= "yellow2", pch=15)
 
-
-
-
-
-
-
-
-
-
+#Plot for Soil Temperature:
+plot(datW$DD, datW$soil.moisture, xlab = "Day of Year", ylab = "Soil Temp in Degrees C",
+     type="b", col= "olivedrab1", pch=15)
 
 
