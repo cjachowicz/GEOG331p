@@ -13,10 +13,8 @@ dplyr::lag()
 #####################################
 ##### Part 1: for loops         #####
 #####################################
-#Using only data for iris versicolor
-#write a for loop
-#that produces a regression table
-#for each of the following relationships
+#Using only data for iris versicolor write a for loop that produces 
+#a regression table for each of the following relationships
 #1. iris  sepal length x width
 #2. iris  petal length x width
 #3. iris sepal length x petal length
@@ -26,7 +24,7 @@ iris_sepal_length <- iris$Sepal.Length
 iris_sepal_width <- iris$Sepal.Width
 iris_petal_length <- iris$Petal.Length
 iris_petal_width <- iris$Petal.Width
-#create a list f equations to put into the regression command within for loop
+#create a list of equations to put into the regression command within for loop
 forlooplist <- list(
     iris_sepal_length ~ iris_sepal_width,
     iris_petal_length ~ iris_petal_width,
@@ -55,7 +53,7 @@ iris_height <- dplyr::left_join(iris, height)
 plot(iris$Sepal.Length,iris$Sepal.Width)
 
 #3a. now make the same plot in ggplot
-ggplot(data = iris, aes(x = Sepal.Length, y = Sepal.Width))
+ggplot(data = iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point()
 
 #3b. make a scatter plot with ggplot and get rid of  busy grid lines
 ggplot(data = iris, aes(x = Sepal.Length, y = Sepal.Width)) + theme_classic() + geom_point()
