@@ -1,5 +1,8 @@
+head(iris)
+install.packages(c("tidyverse"))
+library(tidyverse)
 # install.packages("devtools")
-#devtools::install_github("r-lib/conflicted")
+devtools::install_github("r-lib/conflicted")
 
 #use built in iris dataset
 #take a look at it 
@@ -51,16 +54,11 @@ for (duet in forlooplist){
 ##### Part 2: data in dplyr     #####
 #####################################
 
-#use dplyr to join data of maximum height
-#to a new iris data frame
+#use dplyr to join data of maximum height to a new iris data frame
 height <- data.frame(Species = c("virginica","setosa","versicolor"),
                      Height.cm = c(60,100,11.8))
+iris_height <- left_join(iris, height)
 
-virginica <- iris[iris$Species == "virginica",]
-setosa <- iris[iris$Species == "setosa",]
-versicolor <- iris[iris$Species == "versicolor",]
-
-filter(iris, setosa$Sepal.Length < 100)
 
 #####################################
 ##### Part 3: plots in ggplot2  #####
@@ -86,8 +84,10 @@ fancy + scale_radius()
 
 fancy + theme_classic() + geom_point()
 
-fancy <- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = "red", size = Petal.Length))
-fancy + theme_classic() + geom_point() + scale_color_manual(values = c("red" = "turquoise2"))
+fancy <- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species, size = Petal.Length))
+fancy + theme_classic() + geom_point() labs(x = "Petal length (cm)",
+                                            y = "Petal width (cm)",
+                                            title = "Petal length and width by species")
 
 
 
