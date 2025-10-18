@@ -31,7 +31,7 @@ dplyr::lag()
 #irisVersicolor <- data.frame(Species = c("versicolor")
 #print(irisVersicolor)
 
-#calculate necessary measurements for easy future use
+#assign necessary measurements name for easy future use
 iris_sepal_length <- iris$Sepal.Length
 iris_sepal_width <- iris$Sepal.Width
 iris_petal_length <- iris$Petal.Length
@@ -43,21 +43,21 @@ forlooplist <- list(
     iris_petal_length ~ iris_petal_width,
     iris_sepal_length ~ iris_petal_length
 )
+#list to put regression tables in
+reg_list <- list()
 #for-loop creating every regression table
-for (duet in forlooplist){
+for (duet in 1:length(forlooplist)){
   model <- lm(duet, data = iris)
-  print("Model Summary: ")
-  print(duet)
-  summary(model)
+  reg_list[[duet]] <- model
 }
 #####################################
 ##### Part 2: data in dplyr     #####
 #####################################
-
 #use dplyr to join data of maximum height to a new iris data frame
 height <- data.frame(Species = c("virginica","setosa","versicolor"),
                      Height.cm = c(60,100,11.8))
-iris_height <- left_join(iris, height)
+#dplyr joins height variables to the leftmost columns of the entire iris dataset
+iris_height <- dplyr::left_join(iris, height)
 
 
 #####################################
@@ -68,26 +68,17 @@ iris_height <- left_join(iris, height)
 plot(iris$Sepal.Length,iris$Sepal.Width)
 
 #3a. now make the same plot in ggplot
-new_plot <- ggplot(data = iris, aes(x = Sepal.Length, y = Sepal.Width))
+ggplot(data = iris, aes(x = Sepal.Length, y = Sepal.Width))
 
 #3b. make a scatter plot with ggplot and get rid of  busy grid lines
-new_plot + theme_classic() + geom_point()
+ggplot(data = iris, aes(x = Sepal.Length, y = Sepal.Width)) + theme_classic() + geom_point()
 
 #3c. make a scatter plot with ggplot, remove grid lines, add a title and axis labels, 
 #    show species by color, and make the point size proportional to petal length
-fancy <- ggplot(data = iris, aes(x = Sepal.Length, y = Sepal.Length))
-
-fancy + labs(x = "Petal length (cm)",
-                  y = "Petal width (cm)",
-                  title = "Petal length and width by species")
-fancy + scale_radius()
-
-fancy + theme_classic() + geom_point()
-
 fancy <- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species, size = Petal.Length))
-fancy + theme_classic() + geom_point() labs(x = "Petal length (cm)",
-                                            y = "Petal width (cm)",
-                                            title = "Petal length and width by species")
+fancy + theme_classic() + geom_point() + labs(x = "Sepal length (cm)",
+                                            y = "Sepal width (cm)",
+                                            title = "Sepal length by Sepal width for different species")
 
 
 
