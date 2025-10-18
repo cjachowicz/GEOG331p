@@ -1,23 +1,18 @@
 head(iris)
 install.packages(c("tidyverse"))
 library(tidyverse)
-# install.packages("devtools")
 devtools::install_github("r-lib/conflicted")
-
-#use built in iris dataset
-#take a look at it 
+#use built in iris dataset and take a look at it 
 head(iris)
 #load in some tidyverse packages
-dplyr::filter()
-dplyr::lag()
 library(tidyverse)
 #mask every conflict with dplyr packages
 dplyr::filter()
 dplyr::lag()
+
 #####################################
 ##### Part 1: for loops         #####
 #####################################
-
 #Using only data for iris versicolor
 #write a for loop
 #that produces a regression table
@@ -26,17 +21,11 @@ dplyr::lag()
 #2. iris  petal length x width
 #3. iris sepal length x petal length
 
-# hint: consider using a list, and also new vectors for regression variables
-
-#irisVersicolor <- data.frame(Species = c("versicolor")
-#print(irisVersicolor)
-
 #assign necessary measurements name for easy future use
 iris_sepal_length <- iris$Sepal.Length
 iris_sepal_width <- iris$Sepal.Width
 iris_petal_length <- iris$Petal.Length
 iris_petal_width <- iris$Petal.Width
-
 #create a list f equations to put into the regression command within for loop
 forlooplist <- list(
     iris_sepal_length ~ iris_sepal_width,
@@ -59,11 +48,9 @@ height <- data.frame(Species = c("virginica","setosa","versicolor"),
 #dplyr joins height variables to the leftmost columns of the entire iris dataset
 iris_height <- dplyr::left_join(iris, height)
 
-
 #####################################
 ##### Part 3: plots in ggplot2  #####
 #####################################
-
 #look at base R scatter plot
 plot(iris$Sepal.Length,iris$Sepal.Width)
 
@@ -76,17 +63,9 @@ ggplot(data = iris, aes(x = Sepal.Length, y = Sepal.Width)) + theme_classic() + 
 #3c. make a scatter plot with ggplot, remove grid lines, add a title and axis labels, 
 #    show species by color, and make the point size proportional to petal length
 fancy <- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species, size = Petal.Length))
-fancy + theme_classic() + geom_point() + labs(x = "Sepal length (cm)",
-                                            y = "Sepal width (cm)",
-                                            title = "Sepal length by Sepal width for different species")
-
-
-
-
-
+fancy + theme_classic() + geom_point() + labs(x = "Sepal length (cm)",y = "Sepal width (cm)", title = "Sepal length by Sepal width for different species")
 #####################################
 ##### Question: how did         #####
 ##### arguments differ between  #####
 ##### plot and ggplot?          #####
 #####################################		
-
