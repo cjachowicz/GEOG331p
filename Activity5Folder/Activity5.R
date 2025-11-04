@@ -333,6 +333,42 @@ ggplot(data= datD, aes(yearPlot,discharge)) +
 ggplot(data= datD, aes(yearPlot,discharge)) + 
   geom_violin()
 
+#Second hydrograph, January 15.
+#subsest discharge and precipitation within range of interest
+hydroD2 <- datD[datD$doy >= 13 & datD$doy < 14 & datD$year == 2011,]
+hydroP2 <- datP[datP$doy >= 13 & datP$doy < 14 & datP$year == 2011,]
+min(hydroD2$discharge)
+
+#get minimum and maximum range of discharge to plot
+#go outside of the range so that it's easy to see high/low values
+#floor rounds down the integer
+yl2 <- floor(min(hydroD2$discharge))-1
+#ceiling rounds up to the integer
+yh2 <- ceiling(max(hydroD2$discharge))+1
+#minimum and maximum range of precipitation to plot
+pl2 <- 0
+pm2 <-  ceiling(max(hydroP2$HPCP))+.5
+#scale precipitation to fit on the 
+hydroP2$pscale <- (((yh2-yl2)/(pm2-pl2)) * hydroP2$HPCP) + yl2
+
+
+par(mai=c(1,1,1,1))
+#make plot of discharge
+plot(hydroD2$decDay,
+     hydroD2$discharge, 
+     type="l", 
+     ylim=c(yl2,yh2), 
+     lwd=2,
+     xlab="Day of year 2011", 
+     ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")))
+#add bars to indicate precipitation 
+for(i in 1:nrow(hydroP2)){
+  polygon(c(hydroP2$decDay[i]-0.017,hydroP2$decDay[i]-0.017,
+            hydroP2$decDay[i]+0.017,hydroP2$decDay[i]+0.017),
+          c(yl2,hydroP2$pscale[i],hydroP2$pscale[i],yl),
+          col=rgb(0.392, 0.584, 0.929,.2), border=NA)
+}
+
 
 ###            ###
 ### QUESTION 9 ###
