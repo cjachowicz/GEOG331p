@@ -1,5 +1,6 @@
 #load in lubridate
 library(lubridate)
+library(dplyr)
 ## 
 ## Attaching package: 'lubridate'
 ## The following objects are masked from 'package:base':
@@ -196,7 +197,6 @@ legend("topright", c("mean","1 standard deviation"), #legend items
 ###            ###
 
 par(mai=c(1,1,1,1))
-
 dat2017 <- subset(datD, year == 2017)
 average2017 <- aggregate(discharge ~ doy, dat2017, mean, na.rm = TRUE)
 
@@ -204,27 +204,27 @@ colnames(average2017) <- c("doy","daily2017")
 
 plot(aveF$doy,aveF$dailyAve, 
      type="l", 
-     xlab="Month", 
+     xlab="Month of year", 
      ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
      lwd=2,
      col="blue",
-     ylim=c(0,100),
+     ylim=c(0,120),
      xaxs="i", yaxs ="i",#remove gaps from axes
      axes=FALSE)#no axes
-  
+box(which = "plot", lwd = 1, col = "black")  
 
 polygon(c(aveF$doy, rev(aveF$doy)),#x coordinates
         c(aveF$dailyAve-sdF$dailySD,rev(aveF$dailyAve+sdF$dailySD)),#ycoord
         col=rgb(0.392, 0.584, 0.929,.2), #color that is semi-transparent
         border=NA#no border
 )       
-axis(1, seq(15,345, by=30), #place labels in middle of each month
-     lab=seq(1,12, by=1)) #label every month (12)
+axis(1, c(15,45,74,105,135,166,196,227,258,288,319,349), #place labels in middle of each month's range
+     lab=month.abb) #shortcut that labels every month (12)
 axis(2, seq(0,80, by=20),
      seq(0,80, by=20),
      las = 2)#show ticks at 90 degree angle
 
-legend("topright", c("mean","1 standard deviation", "2017 average"), #append 2017 average to legend items
+legend("topright", c("mean of total observations","1 standard deviation", "2017 mean of observations"), #append 2017 average to legend items
        lwd=c(2,NA),#lines
        col=c("blue",rgb(0.392, 0.584, 0.929,.2),"tomato2"),#colors
        pch=c(NA,15),#symbols
@@ -232,19 +232,54 @@ legend("topright", c("mean","1 standard deviation", "2017 average"), #append 201
 lines(average2017$doy, average2017$daily2017, col="tomato2", lwd=2)
 
 
-print("done")
-print("done")
-print("done")
-
-
-
-###            ###
-### QUESTION 6 ###
-###            ###
-
 ###            ###
 ### QUESTION 7 ###
 ###            ###
+
+allDischarge <- aggregate(datP$HPCP, 
+                          by = list(year = datP$year, doy = datP$doy),
+                          FUN = length) #dataframe with all discharge data
+colnames(allDischarge) <- c("year","doy","observations")
+allDischarge$full24 <- allDischarge$observations == 24 #new col indicating bool(Has 24 observations)
+
+#apply bool to observations in datD
+datD <- left_join(datD, allDischarge, by = c("year", "doy"))
+
+#plot
+par(mai=c(1,1,1,1))
+
+plot(datD$decYear,datD$discharge, 
+     type="l", 
+     xlab="year", 
+     ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
+     lwd=2,
+     col = rgb(0.8, 0.15, 0.15,0.6),
+     ylim=c(0,525),
+     xaxs="i", yaxs ="i",#remove gaps from axes
+     axes=FALSE)#no axes
+     box(which = "plot", lwd = 1, col = "black")
+points(datD$decYear[datD$full24],
+       datD$discharge[datD$full24],
+     pch=5,
+     col="turquoise2")
+axis(1, at = pretty(datD$decYear), labels = pretty(datD$decYear))
+axis(2, at = pretty(datD$discharge), labels = pretty(datD$discharge), las = 2)
+legend("topright",
+       legend=c("All discharge","Days with 24 hrs precip data"),
+       pch= c(NA, 5),
+       lwd = c(2, NA),
+       col=c(rgb(0.8, 0.15, 0.15,0.6),"turquoise2"),
+       bty="n")
+
+print("DOG")
+
+print("DOG")
+print("DOG")
+
+print("DOG")
+
+print("DOG")
+
 
 
 #subsest discharge and precipitation within range of interest
