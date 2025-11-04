@@ -27,6 +27,8 @@ datD$doy <- yday(datesD)
 datD$year <- year(datesD)
 #define time
 timesD <- hm(datD$time)
+#calculate month
+datD$month <- month(datesD)
 
 #### define time for precipitation #####    
 dateP <- ymd_hm(datP$DATE)
@@ -55,6 +57,7 @@ datP$decYear <- ifelse(leap_year(datP$year),datP$year + (datP$decDay/366),
 ### QUESTION 2 ###
 ###            ###
 
+#plot(datD$decYear, datD$discharge, type="l", xlab="Year", ylab="Discharge ft^3 sec^-1")
 
 
 #plot discharge
@@ -166,9 +169,11 @@ plot(aveF$doy,aveF$dailyAve,
      xlab="Year", 
      ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
      lwd=2,
+     col="black",
      ylim=c(0,90),
      xaxs="i", yaxs ="i",#remove gaps from axes
      axes=FALSE)#no axes
+
 polygon(c(aveF$doy, rev(aveF$doy)),#x coordinates
         c(aveF$dailyAve-sdF$dailySD,rev(aveF$dailyAve+sdF$dailySD)),#ycoord
         col=rgb(0.392, 0.584, 0.929,.2), #color that is semi-transparent
@@ -189,6 +194,49 @@ legend("topright", c("mean","1 standard deviation"), #legend items
 ###            ###
 ### QUESTION 5 ###
 ###            ###
+
+par(mai=c(1,1,1,1))
+
+dat2017 <- subset(datD, year == 2017)
+average2017 <- aggregate(discharge ~ doy, dat2017, mean, na.rm = TRUE)
+
+colnames(average2017) <- c("doy","daily2017")
+
+plot(aveF$doy,aveF$dailyAve, 
+     type="l", 
+     xlab="Month", 
+     ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
+     lwd=2,
+     col="blue",
+     ylim=c(0,100),
+     xaxs="i", yaxs ="i",#remove gaps from axes
+     axes=FALSE)#no axes
+  
+
+polygon(c(aveF$doy, rev(aveF$doy)),#x coordinates
+        c(aveF$dailyAve-sdF$dailySD,rev(aveF$dailyAve+sdF$dailySD)),#ycoord
+        col=rgb(0.392, 0.584, 0.929,.2), #color that is semi-transparent
+        border=NA#no border
+)       
+axis(1, seq(15,345, by=30), #place labels in middle of each month
+     lab=seq(1,12, by=1)) #label every month (12)
+axis(2, seq(0,80, by=20),
+     seq(0,80, by=20),
+     las = 2)#show ticks at 90 degree angle
+
+legend("topright", c("mean","1 standard deviation", "2017 average"), #append 2017 average to legend items
+       lwd=c(2,NA),#lines
+       col=c("blue",rgb(0.392, 0.584, 0.929,.2),"tomato2"),#colors
+       pch=c(NA,15),#symbols
+       bty="n")#no legend border
+lines(average2017$doy, average2017$daily2017, col="tomato2", lwd=2)
+
+
+print("done")
+print("done")
+print("done")
+
+
 
 ###            ###
 ### QUESTION 6 ###
