@@ -66,6 +66,12 @@ plot(datD$decYear, datD$discharge, type="l", xlab="Year", ylab=expression(paste(
 ###            ###
 ### QUESTION 3 ###
 ###            ###
+datP_sum <- sum(!is.na(datP))
+datH_sum <- sum(!is.na(datH))
+totalObservations <- datP_sum + datH_sum
+totalObservations
+datP_sum / totalObservations
+datH_sum / totalObservations
 
 ###            ###
 ### QUESTION 4 ###
@@ -322,18 +328,9 @@ for(i in 1:nrow(hydroP)){
 ### QUESTION 8 ###
 ###            ###
 
-library(ggplot2)
-#specify year as a factor
-datD$yearPlot <- as.factor(datD$year)
-#make a boxplot
-ggplot(data= datD, aes(yearPlot,discharge)) + 
-  geom_boxplot()
 
-#make a violin plot
-ggplot(data= datD, aes(yearPlot,discharge)) + 
-  geom_violin()
 
-#Second hydrograph, January 15.
+#Second hydrograph, January 13.
 #subsest discharge and precipitation within range of interest
 hydroD2 <- datD[datD$doy >= 13 & datD$doy < 14 & datD$year == 2011,]
 hydroP2 <- datP[datP$doy >= 13 & datP$doy < 14 & datP$year == 2011,]
@@ -373,21 +370,35 @@ for(i in 1:nrow(hydroP2)){
 ###            ###
 ### QUESTION 9 ###
 ###            ###
-#     _______________
-  #####             #####
-#####   QUESTION 10   #####
-  #####             #####
-#     ---------------
+
+library(ggplot2)
+#specify year as a factor
+datD$yearPlot <- as.factor(datD$year)
+#make a boxplot
+ggplot(data= datD, aes(yearPlot,discharge)) + 
+  geom_boxplot()
+
+#make a violin plot
+ggplot(data= datD, aes(yearPlot,discharge)) + 
+  geom_violin()
 
 
+#specify season as a factor
+datD$season <- as.factor(cut(datD$month,
+                             breaks = c(0, 2, 5, 8, 11, 12),
+                             labels = c("Winter", "Spring", "Summer", "Fall", "Winter"),
+                             include.lowest = TRUE))
 
 
+#Violin plot, by season, for 2016
+ggplot(data= datD[datD$year==2016,], aes(season,discharge)) + 
+  geom_violin() +
+  labs(x="Season in 2016", y=expression(paste("Discharge ft"^"3 ","sec"^"-1")))
 
 
-
-
-
-
-
+#Violin plot, by season, for 2017
+ggplot(data= datD[datD$year==2017,], aes(season,discharge)) + 
+  geom_violin()+
+  labs(x="Season in 2017", y=expression(paste("Discharge ft"^"3 ","sec"^"-1")))
 
 
