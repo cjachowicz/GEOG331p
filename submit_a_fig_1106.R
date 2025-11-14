@@ -101,15 +101,27 @@ avoid <- c("S","M","T")
 data_new <- replace(datW$Maximum.Temperature.degrees..F., avoid, NA)
 
 
+#Convert every string into a number; any letter becomes NA
+datW <- datW %>% 
+  mutate(across(where(is.character), ~ suppressWarnings(as.numeric(.x))))
+
+#subset 1/1/2015 to 12/31/2025, 365 observations of 8 variables
+newSubSet <- datW %>%
+  filter(Date >= as.Date("2015-01-01") & 
+           Date <= as.Date("2015-12-31"))
 
 
-
-
-
-
-
-
-
+#ggplot
+ggplot(datW,aes(x=doy)) +
+  geom_point(aes(y = Minimum.Temperature.degrees..F.), color = "cyan2",alpha = .5) +
+  geom_point(aes(y = Maximum.Temperature.degrees..F.), color = "hotpink", alpha = .5) +
+  labs(
+    title = "Daily Min and Max Temperature (degrees F)",
+    x = "Doy (2015)",
+    y = "Temperature (degrees F)",
+  ) +
+  theme_minimal()+
+  theme(panel.border = element_rect(colour = "black", fill = NA, linewidth = 1))
 
 
 
