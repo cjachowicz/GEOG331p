@@ -127,15 +127,53 @@ ggplot(datW,aes(x=doy)) +
 
 
 
+#NEW 11/20/25
+#ggplot
+ggplot(datW,aes(x=doy)) +
+  geom_point(aes(y = Minimum.Temperature.degrees..F.), color = "green",alpha = .5) +
+  geom_point(aes(y = Maximum.Temperature.degrees..F.), color = "orange", alpha = .5) +
+  geom_point(aes(y = Maximum.Temperature.degrees..F. - (Maximum.Temperature.degrees..F. - 
+                     Minimum.Temperature.degrees..F.) / 2), color = "yellow", alpha = .2) +
+  geom_point(aes(y = Maximum.Temperature.degrees..F. + (Maximum.Temperature.degrees..F. - 
+                      Minimum.Temperature.degrees..F.) / 2), color = "red", alpha = .2) +
+  geom_point(aes(y = Minimum.Temperature.degrees..F. - (Maximum.Temperature.degrees..F. - 
+                    Minimum.Temperature.degrees..F.) / 2), color = "cyan", alpha = .2) +
+  geom_point(aes(y = Maximum.Temperature.degrees..F. + (Maximum.Temperature.degrees..F. - 
+                      Minimum.Temperature.degrees..F.)), color = "hotpink", alpha = .2) +
+  geom_point(aes(y = Minimum.Temperature.degrees..F. - (Maximum.Temperature.degrees..F. - 
+                   Minimum.Temperature.degrees..F.)), color = "purple", alpha = .2) +
+  labs(
+    title = "Daily Min and Max Temperature (degrees F)",
+    x = "Doy (2015)",
+    y = "Temperature (degrees F)",
+  ) +
+  theme_minimal()+
+  theme(panel.border = element_rect(colour = "black", fill = NA, linewidth = 1))
+  
+
+par(mfrow = c(2, 1))
+
+ggplot(datN, aes(x=Species,y=X..Survival)) + 
+  geom_violin() +
+  geom_point(color="blue") + 
+  labs(title = "Survival rate (%) by species",
+       x = "Species observed",
+       y = "Survival rate (%)")
+
+#####PLOT 2######
+ggplot(datN, aes(x=Bay,y=X..Survival)) + 
+  geom_violin() +
+  geom_point(color="tomato4") + 
+  labs(title = "Survival rate (%) by bay",
+       x = "Bay observed",
+       y = "Survival rate (%)")
 
 
+#plot overlaying the two:
+ggplot(datN, aes())
 
 
-
-
-
-
-
+#visualising data: can show where each bouy was on the actual lake
 
 
 
