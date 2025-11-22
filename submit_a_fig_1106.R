@@ -175,7 +175,41 @@ ggplot(datN, aes())
 
 #visualising data: can show where each bouy was on the actual lake
 
+#LAST FIG
+datC <- read.csv("Z:\\cjachowicz\\data\\WaterChemistry.csv") 
+head(datC) 
 
+#get doy and year for datC
+datC <- datC %>%
+  mutate(Date = mdy(Date)) #convert date to manipulable format
+datC$doy <- yday(datC$Date)#get day of year
+datC$year <- year(datC$Date)#get year, not really necessary for this dataset but standardizes things
+
+#to make things look better
+str(datC$Date)
+unique(datC$Date)
+datC$Date <- as.Date(datC$Date, format = "%m/%d/%Y")
+
+
+
+###PLOT###
+ggplot(datC, aes(x=Date,y=pH,color=Bay)) +
+  geom_point(aes(group=Buoy..))+
+  theme_minimal() +
+  labs(
+    title = "pH Over Time by Bay",
+            x = "Date",
+            y = "pH",
+            color = "Bay"
+  )+
+  geom_smooth(method = "lm", se = TRUE, linewidth = 1) +
+  theme(
+    legend.position = "right"
+  )+
+  theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 1),
+    plot.background  = element_rect(colour = "gray40", fill = NA, linewidth = 1)
+  )
 
 
 
