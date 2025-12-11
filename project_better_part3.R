@@ -159,11 +159,20 @@ ndvi_post <- (post_fire_nir - post_fire_red) / (post_fire_nir + post_fire_red)
 # NDVI change from pre-fire to post-fire
 ndvi_change_immediate <- ndvi_post - ndvi_pre
 
+# long-fire NDVI
+ndvi_long <- (long_term_nir - long_term_red) / (long_term_nir + long_term_red)
 
+# NDVI change from pre-fire to long
+ndvi_change_late <- ndvi_long - ndvi_pre
 
 par(mfrow = c(1, 1))
 
 par(mfrow = c(2, 2), mar = c(4, 4, 3, 6))
+
+ndvi_pre <- crop_custom(ndvi_pre)
+ndvi_post <- crop_custom(ndvi_post)
+ndvi_change_immediate <- crop_custom(ndvi_change_immediate)
+ndvi_long <- crop_custom(ndvi_long)
 
 # 1. Pre-fire NDVI
 plot(ndvi_pre, 
@@ -189,7 +198,16 @@ hist(ndvi_change_immediate,
      xlab = "NDVI Change",
      col = "steelblue",
      breaks = 50)
-
+# 5. Long-fire NDVI
+plot(ndvi_long, 
+     main = "Post-Fire NDVI (January 13 2025)",
+     col = terrain.colors(100),
+     axes = TRUE)
+# 6. DIFFERENCE BETWEEN PRE AND LONG
+plot(ndvi_change_late, 
+     main = "NDVI Change (Post[2025] - Pre)",
+     col = rev(heat.colors(100)),
+     axes = TRUE)
 
 
 ################MAIN FUNCTION HERE#############
