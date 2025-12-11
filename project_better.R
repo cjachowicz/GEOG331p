@@ -20,11 +20,16 @@ prefire_folder <- list.files("Z:\\cjachowicz\\data\\creek_FIRE_DATA\\prefire_fol
 postfire_folder <- list.files("Z:\\cjachowicz\\data\\creek_FIRE_DATA\\postfire_folder", full.names = T)
 
 #PREFIRE BANDS FOR EQUATION
-prefire_nir <- rast(prefire_folder[1])
-prefire_swir2 <- rast(prefire_folder[2])
+prefire_nir <- rast(prefire_folder[3]) #band 5
+prefire_swir2 <- rast(prefire_folder[4]) #band 7
 #POSTFIRE BANDS FOR EQUATION
-postfire_nir <- rast(postfire_folder[1])
-postfire_swir2 <- rast(postfire_folder[2])
+postfire_nir <- rast(postfire_folder[2])
+postfire_swir2 <- rast(postfire_folder[3])
+
+#print each one
+prefire_folder
+
+
 
 # ===== CALCULATE NBR =====
 # NBR formula: (NIR - SWIR2) / (NIR + SWIR2)
@@ -200,4 +205,71 @@ ggplot(recovery_data, aes(x = date, y = mean_nbr)) +
        subtitle = "Mean NBR over time",
        x = "Date", y = "Mean NBR") +
   theme_minimal()
+
+
+
+
+crop_custom <- function(r) {
+  e <- ext(r)
+  xr <- e$xmax - e$xmin
+  yr <- e$ymax - e$ymin
+  
+  # 10% crop
+  r1 <- crop(r, ext(
+    e$xmin + 0.16 * xr,
+    e$xmax - 0.16 * xr,
+    e$ymin + 0.16 * yr,
+    e$ymax - 0.16 * yr
+  ))
+  
+  e <- ext(r1)
+  xr <- e$xmax - e$xmin
+  yr <- e$ymax - e$ymin
+  
+  # Additional 25% crop (top & right)
+  r2 <- crop(r1, ext(
+    e$xmin,
+    e$xmax - 0.30 * xr,
+    e$ymin,
+    e$ymax - 0.30 * yr
+  ))
+  
+  r2
+}
+
+# Usage
+r_final <- crop_custom(ENTER_NAME_HERE)
+plot(r_final, 
+     main = "Pre-Fire NDVI (August 28 2020)",
+     col = terrain.colors(100),
+     axes = TRUE)
+#conclude plot usage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
