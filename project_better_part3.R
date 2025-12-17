@@ -17,15 +17,15 @@ longterm_folder <- list.files("Z:\\cjachowicz\\data\\creek_FIRE_DATA\\longterm_f
 prefire_folder #3 4 5 7
 longterm_folder #3 4 5 7 10
 
-# Pre-fire scene (before September 2020)
+# Pre-fire scene (before September 2020) 08/28/2020
 pre_fire_red <- rast(prefire_folder[2])  # Band 4 (Red)
 pre_fire_nir <-  rast(prefire_folder[3])  # Band 5 (NIR)
 
-# Post-fire scene (immediately after fire, Fall 2020)
+# Post-fire scene (immediately after fire, Fall 2020) #01/18/2021
 post_fire_red <- rast(postfire_folder[1]) #b4
 post_fire_nir <- rast(postfire_folder[2]) #b5
 
-#long_term_red and nir (2025 january)
+#long_term_red and nir (2025 january) #01/13/2025
 long_term_red <- rast(longterm_folder[2]) #b4
 long_term_nir <- rast(longterm_folder[3]) #b5
 
@@ -182,7 +182,7 @@ plot(ndvi_pre,
 
 # 2. Post-fire NDVI
 plot(ndvi_post,
-     main = "Post-Fire NDVI (January 15 2021)",
+     main = "Post-Fire NDVI (January 13 2021)",
      col = terrain.colors(100),
      axes = TRUE)
 

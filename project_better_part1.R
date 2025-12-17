@@ -8,6 +8,20 @@ library(viridis)
 # After downloading, you'll have a folder with .TIF files
 # Example file names end in: _SR_B5.TIF (NIR) and _SR_B7.TIF (SWIR2)
 
+#LOAD POLYGON OF FIRE MAPPING HERE
+#direct approach: WORKED FINE __________________ ___________________ ___________________
+setwd("Z:\\cjachowicz\\data\\creek_FIRE_DATA\\California_Historic_Fire_Perimeters_-7474393541221033101")
+polygon_fire <- st_read("ca_fire_perimeters.shp")
+print(polygon_fire)
+
+
+#+++++++++++++++++++++++ polygon++++++++++++++++++++
+#---------------------------------------------------
+
+
+
+
+
 #folder contains: bands 5 + 7 for surface reflectance and surface temperature pre fire
 prefire_folder <- list.files("Z:\\cjachowicz\\data\\creek_FIRE_DATA\\prefire_folder", full.names = T)
 #folder with same for post fire
@@ -22,6 +36,18 @@ postfire_nir <- rast(postfire_folder[2])
 postfire_swir2 <- rast(postfire_folder[3])
 
 
+#crop
+prefire_nir <- crop_custom(prefire_nir)
+prefire_swir2 <- crop_custom(prefire_swir2)
+postfire_nir <- crop_custom(postfire_nir)
+postfire_swir2 <- crop_custom(postfire_swir2)
+
+#changed 25 -> 15
+prefire_nir <- aggregate(prefire_nir, fact = 15, fun = mean)
+prefire_swir2 <- aggregate(prefire_swir2, fact = 15, fun = mean)
+postfire_nir <- aggregate(postfire_nir, fact = 15, fun = mean)
+postfire_swir2 <- aggregate(postfire_swir2, fact = 15, fun = mean)
+
 # ===== CALCULATE NBR =====
 # NBR formula: (NIR - SWIR2) / (NIR + SWIR2)
 
@@ -34,8 +60,24 @@ calc_nbr <- function(nir, swir2) {
 nbr_prefire <- calc_nbr(prefire_nir, prefire_swir2)
 nbr_postfire <- calc_nbr(postfire_nir, postfire_swir2)
 
-# Calculate dNBR (differenced NBR - shows burn severity)
-dnbr <- nbr_prefire - nbr_postfire
+#avoid the error
+# Match CRS
+crs(nbr_postfire) <- crs(nbr_prefire)
+
+# Resample postfire to prefect match prefire
+postfire_resampled <- resample(nbr_postfire, nbr_prefire, method = "bilinear")
+
+# Compute dNBR
+dnbr <- nbr_prefire - postfire_resampled
+
+#dnbr <- nbr_prefire - nbr_postfire
+#/\ didnt work: extents dont match
+
+dnbr <- crop_custom(dnbr)
+nbr_pre_df <- crop_custom(nbr_pre_df)
+nbr_post_df <- crop_custom(nbr_post_df)
+
+
 
 # ===== CREATE VISUALIZATIONS WITH GGPLOT2 =====
 
@@ -95,3 +137,79 @@ ggplot(dnbr_df, aes(x = x, y = y, fill = severity)) +
        fill = "Burn Severity",
        x = "Longitude", y = "Latitude") +
   theme_minimal()
+
+
+
+
+
+
+
+
+
+
+
+# 000. PRE-FIRE NBR MAP
+nbr_prefire <- as.data.frame(nbr_prefire, xy = TRUE)
+
+ggplot(nbr_prefire, aes(x = x, y = y, fill = NBR)) +
+  geom_raster() +
+  scale_fill_viridis(option = "viridis", na.value = "transparent") +
+  coord_equal() +
+  labs(title = "Pre-fire NBR - Creek Fire Area",
+       subtitle = "August 2020",
+       x = "Longitude", y = "Latitude") +
+  theme_minimal()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+crop_custom <- function(r) {
+  e <- ext(r)
+  xr <- e$xmax - e$xmin
+  yr <- e$ymax - e$ymin
+  
+  # 10% crop
+  r1 <- crop(r, ext(
+    e$xmin + 0.16 * xr,
+    e$xmax - 0.16 * xr,
+    e$ymin + 0.16 * yr,
+    e$ymax - 0.16 * yr
+  ))
+  
+  e <- ext(r1)
+  xr <- e$xmax - e$xmin
+  yr <- e$ymax - e$ymin
+  
+  # Additional 25% crop (top & right)
+  r2 <- crop(r1, ext(
+    e$xmin,
+    e$xmax - 0.30 * xr,
+    e$ymin,
+    e$ymax - 0.30 * yr
+  ))
+  
+  r2
+}
+
+# Usage
+r_final <- crop_custom(ENTER_NAME_HERE)
+
+
+
+

@@ -11,8 +11,8 @@ path_to_prefire <- "Z:\\cjachowicz\\data\\creek_FIRE_DATA\\prefire_folder"
 b10_before <- list.files("Z:\\cjachowicz\\data\\creek_FIRE_DATA\\temp_pre_B10_folder", full.names = T)
 b10_after_2021  <- list.files("Z:\\cjachowicz\\data\\creek_FIRE_DATA\\temp_postfire_B10\\temp_2021", full.names = T)
 #convert list into a raster file
-before_fire <- rast(b10_before[1])
-after_fire_2021 <- rast(b10_after_2021[1])
+before_fire <- rast(b10_before[1])#08/28/2020
+after_fire_2021 <- rast(b10_after_2021[1])#08/30/2021
 
 #Apply scaling factor to reduce data usage
 before_fire <- aggregate(b10_before, fact = 10, fun = "mean")

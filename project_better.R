@@ -23,8 +23,32 @@ postfire_folder <- list.files("Z:\\cjachowicz\\data\\creek_FIRE_DATA\\postfire_f
 prefire_nir <- rast(prefire_folder[3]) #band 5
 prefire_swir2 <- rast(prefire_folder[4]) #band 7
 #POSTFIRE BANDS FOR EQUATION
-postfire_nir <- rast(postfire_folder[2])
-postfire_swir2 <- rast(postfire_folder[3])
+postfire_nir <- rast(postfire_folder[2]) #01/18/2021
+postfire_swir2 <- rast(postfire_folder[3]) #01/18/2021
+
+
+
+#+++++++++++++++++++++++ polygon++++++++++++++++++++
+#---------------------------------------------------
+#poly_folder <- list.files("Z:\\cjachowicz\\data\\creek_FIRE_DATA\\California_Historic_Fire_Perimeters_-7474393541221033101")
+#print(poly_folder)
+#polygon_fire <- st_read(poly_folder[4])
+#print(polygon_fire)
+#referne shape if above doesnt work
+#fire_poly <- st_read("ca_fire_perimeters.shp")
+
+#shp_files <- list.files(pattern = "\\.shp$")
+#polygon_fire <- st_read(shp_files[1])
+
+
+#direct approach: WORKED FINE __________________ ___________________ ___________________
+setwd("Z:\\cjachowicz\\data\\creek_FIRE_DATA\\California_Historic_Fire_Perimeters_-7474393541221033101")
+polygon_fire <- st_read("ca_fire_perimeters.shp")
+print(polygon_fire)
+
+
+#+++++++++++++++++++++++ polygon++++++++++++++++++++
+#---------------------------------------------------
 
 
 
@@ -37,8 +61,8 @@ calc_nbr <- function(nir, swir2) {
 }
 
 # Calculate NBR for both periods
-nbr_prefire <- calc_nbr(prefire_nir, prefire_swir2)
-nbr_postfire <- calc_nbr(postfire_nir, postfire_swir2)
+nbr_prefire <- calc_nbr(prefire_nir, prefire_swir2) #08/28/2020
+nbr_postfire <- calc_nbr(postfire_nir, postfire_swir2) #01/18/2021
 
 # Free memory from raw bands
 rm(prefire_nir, prefire_swir2, postfire_nir, postfire_swir2)
