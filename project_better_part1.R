@@ -8,6 +8,8 @@ library(viridis)
 # After downloading, you'll have a folder with .TIF files
 # Example file names end in: _SR_B5.TIF (NIR) and _SR_B7.TIF (SWIR2)
 
+
+
 #LOAD POLYGON OF FIRE MAPPING HERE
 #direct approach: WORKED FINE __________________ ___________________ ___________________
 setwd("Z:\\cjachowicz\\data\\creek_FIRE_DATA\\California_Historic_Fire_Perimeters_-7474393541221033101")
@@ -34,6 +36,37 @@ prefire_swir2 <- rast(prefire_folder[4]) #band 7
 #POSTFIRE BANDS FOR EQUATION
 postfire_nir <- rast(postfire_folder[2])
 postfire_swir2 <- rast(postfire_folder[3])
+
+
+
+############ NEW STUFF
+
+#polygon has same crs as raster file
+st_transform(polygon_fire, crs(prefire_nir))
+#mask it
+polygon_vect <- vect(polygon_fire)
+
+# Apply mask
+masked_landsat <- mask(prefire_nir, polygon_vect)
+plot(masked_landsat)
+
+
+
+raster_df <- as.data.frame(masked_landsat, xy = TRUE, na.rm = TRUE)
+ggplot(raster_df, aes(x = x, y = y, fill = value)) +
+  geom_raster() +
+  scale_fill_viridis_c() +
+  coord_equal() +
+  theme_minimal() +
+  labs(title = "Masked Landsat Image", fill = "Reflectance")
+
+
+
+
+
+
+
+#### END NEW stuff ###
 
 
 #crop

@@ -15,6 +15,7 @@ longterm_folder <- list.files("Z:\\cjachowicz\\data\\creek_FIRE_DATA\\longterm_f
 
 #see order
 prefire_folder #3 4 5 7
+postfire_folder
 longterm_folder #3 4 5 7 10
 
 # Pre-fire scene (before September 2020) 08/28/2020
@@ -22,106 +23,49 @@ pre_fire_red <- rast(prefire_folder[2])  # Band 4 (Red)
 pre_fire_nir <-  rast(prefire_folder[3])  # Band 5 (NIR)
 
 # Post-fire scene (immediately after fire, Fall 2020) #01/18/2021
-post_fire_red <- rast(postfire_folder[1]) #b4
-post_fire_nir <- rast(postfire_folder[2]) #b5
+post_fire_red <- rast(postfire_folder[5]) #b4
+post_fire_nir <- rast(postfire_folder[6]) #b5
 
 #long_term_red and nir (2025 january) #01/13/2025
-long_term_red <- rast(longterm_folder[2]) #b4
-long_term_nir <- rast(longterm_folder[3]) #b5
-
-
-############## Flexible Cropping Functions ####################
-
-# Function to crop from top (removes upper portion)
-# proportion: fraction to remove from top (e.g., 0.33 removes top third)
-crop_from_top <- function(r, proportion = 1/3) {
-  e <- ext(r)
-  ymin <- e[3]
-  ymax <- e[4]
-  y_range <- ymax - ymin
-  
-  new_ymax <- ymax - (proportion * y_range)  # lower the top
-  new_ymin <- ymin  # keep bottom
-  
-  new_extent <- ext(e[1], e[2], new_ymin, new_ymax)
-  crop(r, new_extent)
-}
-
-# Function to crop from right (removes right portion)
-# proportion: fraction to remove from right (e.g., 0.25 removes right quarter)
-crop_from_right <- function(r, proportion = 1/4) {
-  e <- ext(r)
-  xmin <- e[1]
-  xmax <- e[2]
-  x_range <- xmax - xmin
-  
-  new_xmax <- xmax - (proportion * x_range)  # move right edge left
-  new_xmin <- xmin  # keep left
-  
-  new_extent <- ext(new_xmin, new_xmax, e[3], e[4])
-  crop(r, new_extent)
-}
-
-
-
-pre_fire_red <- crop_from_top(pre_fire_red, 1/4)
-pre_fire_nir <- crop_from_top(pre_fire_nir, 1/4)
-pre_fire_red <- crop_from_right(pre_fire_red, 1/4)
-pre_fire_nir <- crop_from_right(pre_fire_nir, 1/4)
-
-post_fire_red <- crop_from_right(post_fire_red, 1/4)
-post_fire_nir <- crop_from_right(post_fire_nir, 1/4)
-post_fire_red  <- crop_from_top(post_fire_red, 1/4)
-post_fire_nir  <- crop_from_top(post_fire_nir , 1/4)
-
-long_term_nir  <- crop_from_top(long_term_nir, 1/4)
-long_term_red  <- crop_from_top(long_term_red , 1/4)
-long_term_nir <- crop_from_right(long_term_nir, 1/4)
-long_term_red  <- crop_from_right(long_term_red , 1/4)
+long_term_red <- rast(longterm_folder[7]) #b4
+long_term_nir <- rast(longterm_folder[8]) #b5
 
 
 
 
-fire_data <- list(
-  pre_fire_red = pre_fire_red,
-  pre_fire_nir = pre_fire_nir,
-  post_fire_red = post_fire_red,
-  post_fire_nir = post_fire_nir,
-  long_term_red = long_term_red,
-  long_term_nir = long_term_nir
-)
+#ploygon here
+#direct approach: WORKED FINE __________________ ___________________ ___________________
+setwd("Z:\\cjachowicz\\data\\creek_FIRE_DATA\\California_Historic_Fire_Perimeters_-7474393541221033101")
+polygon_fire <- st_read("ca_fire_perimeters.shp")
+print(polygon_fire)
+vect(polygon_fire)
 
-# Apply to all at once
-fire_data <- lapply(fire_data, crop_from_right)
-
-
-
-
-############## Crop to bottom two-thirds FIRST ####################
-# Function to crop to bottom two-thirds
-crop_bottom_two_thirds <- function(r) {
-  e <- ext(r)
-  ymin <- e[3]  # original ymin
-  ymax <- e[4]  # original ymax
-  y_range <- ymax - ymin
-  new_ymax <- ymax  # keep top
-  new_ymin <- ymax - (2/3 * y_range)  # bottom 2/3
-  new_extent <- ext(e[1], e[2], new_ymin, new_ymax)
-  crop(r, new_extent)
-}
-
-# Apply to all rasters
-pre_fire_red <- crop_bottom_two_thirds(pre_fire_red)
-pre_fire_nir <- crop_bottom_two_thirds(pre_fire_nir)
-post_fire_red <- crop_bottom_two_thirds(post_fire_red)
-post_fire_nir <- crop_bottom_two_thirds(post_fire_nir)
-long_term_red <- crop_bottom_two_thirds(long_term_red)
-long_term_nir <- crop_bottom_two_thirds(long_term_nir)
+#same crs
+polygon <- st_transform(polygon_fire, crs(ndvi_pre))
+# 4. Mask the raster using the polygon
+masked_landsat <- mask(ndvi_pre, polygon)
+# 5. Optional: Crop to the polygon extent for a smaller raster
+masked_landsat <- crop(masked_landsat, polygon)
+# 6. Plot the masked raster
+plot(masked_landsat)
+plot(ndvi_pre)
 
 
+polygon_vect <- vect(st_transform(polygon, crs(ndvi_post)))
+# Mask and crop in one step
+masked_landsat <- crop(mask(ndvi_post, polygon_vect), polygon_vect)
+# Plot result
+plot(masked_landsat)
 
 
-
+# Convert raster to dataframe for ggplot
+landsat_df <- as.data.frame(ndvi_long, xy = TRUE)
+names(landsat_df)[3] <- "value"
+ggplot() +
+  geom_raster(data = landsat_df, aes(x = x, y = y, fill = value)) +
+  geom_sf(data = polygon, fill = NA, color = "red", size = 1.2) +
+  coord_sf() +
+  theme_minimal()
 
 
 
@@ -156,6 +100,7 @@ ndvi_pre <- (pre_fire_nir - pre_fire_red) / (pre_fire_nir + pre_fire_red)
 # Post-fire NDVI
 ndvi_post <- (post_fire_nir - post_fire_red) / (post_fire_nir + post_fire_red)
 
+ndvi_post <- resample(ndvi_post, ndvi_pre, method = "bilinear")
 # NDVI change from pre-fire to post-fire
 ndvi_change_immediate <- ndvi_post - ndvi_pre
 
