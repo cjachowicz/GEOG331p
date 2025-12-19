@@ -1,3 +1,6 @@
+# Install/load packages
+install.packages(c("raster", "sf", "tidyverse", "viridis", "terra"))
+
 #load necessary packages into R:
 library(raster)
 library(terra)
@@ -13,6 +16,13 @@ library(gridExtra)
 #the initial overlay
 setwd("Z:\\cjachowicz\\data\\creek_FIRE_DATA\\California_Historic_Fire_Perimeters_-7474393541221033101")
 polygon_fire <- st_read("ca_fire_perimeters.shp")
+
+
+#Dates for landsat imagery, in order of pre, post, long
+#August 28, 2020
+#Agugust 30, 2021
+#August 17. 2025
+
 
 #Load landsat data: pre-fire, post-fire, and long-term
 prefire_folder <- list.files("Z:\\cjachowicz\\data\\creek_FIRE_DATA\\prefire_folder", full.names = T)
@@ -169,7 +179,7 @@ cat("\n = = = DATASET SUMMARY = = = \n")
 cat("Number of valid pixels analyzed:", nrow(df_analysis), "\n")
 cat("\nVariable ranges:\n")
 print(summary(df_analysis))
-
+########### SUMMARY DONE ##############
 
 #PART 6: CREATE CORRELATION TESTS
 
@@ -250,7 +260,7 @@ cor_matrix <- data.frame(
 print(" = = = CORRELATION TABLE = = = ")
 print(cor_matrix)
 
-########################################
+########### SUMMARY DONE ##############
 
 # Subsample data 
 set.seed(123)  # reproducibility
@@ -292,8 +302,8 @@ cor_matrix <- data.frame(
 
 cat("\n = = = CORRELATION TABLE (Subsampled) = = = \n")
 print(cor_matrix, row.names = FALSE)
+########### SUMMARY DONE ##############
 
-###############################################
 
 #PART 7: REGRESSION ANALYSIS
 # M1: Short-term NDVI change vs. fire severity
@@ -357,15 +367,20 @@ plot_correlation <- function(x, y, x_label, y_label, cor_test, df_plot) {
 # Generate plots using subsampled dataset
 p1 <- plot_correlation(df_plot$dnbr, df_plot$ndvi_imm, "dNBR", "NDVI Change (Immediate)", cor_dnbr_ndvi_imm, df_plot)
 p2 <- plot_correlation(df_plot$dnbr, df_plot$ndvi_long, "dNBR", "NDVI Change (Long-term)", cor_dnbr_ndvi_long, df_plot)
-p3 <- plot_correlation(df_plot$dnbr, df_plot$temp_imm, "dNBR", "Temperature Difference (Immediate)", cor_dnbr_temp_imm, df_plot)
-p4 <- plot_correlation(df_plot$dnbr, df_plot$temp_long, "dNBR", "Temperature Difference (Long-term)", cor_dnbr_temp_long, df_plot)
-p5 <- plot_correlation(df_plot$ndvi_imm, df_plot$temp_imm, "NDVI Change (Immediate)", "Temperature Difference (Immediate)", cor_ndvi_temp_imm, df_plot)
-p6 <- plot_correlation(df_plot$ndvi_long, df_plot$temp_long, "NDVI Change (Long-term)", "Temperature Difference (Long-term)", cor_ndvi_temp_long, df_plot)
+p3 <- plot_correlation(df_plot$dnbr, df_plot$temp_imm, "dNBR", "Temperature Difference (Immediate, in C)", cor_dnbr_temp_imm, df_plot)
+p4 <- plot_correlation(df_plot$dnbr, df_plot$temp_long, "dNBR", "Temperature Difference (Long-term, in C)", cor_dnbr_temp_long, df_plot)
+p5 <- plot_correlation(df_plot$ndvi_imm, df_plot$temp_imm, "NDVI Change (Immediate)", "Temperature Difference (Immediate, in C)", cor_ndvi_temp_imm, df_plot)
+p6 <- plot_correlation(df_plot$ndvi_long, df_plot$temp_long, "NDVI Change (Long-term)", "Temperature Difference (Long-term, in C)", cor_ndvi_temp_long, df_plot)
 
 # Plot regressions at once
 grid.arrange(p1, p2, p3, p4, p5, p6, ncol = 2, nrow = 3)
-
-
+########### PLOTTING GRAPHS DONE ##############
+p1
+p2
+p3
+p4
+p5
+p6
 
 #PART 8: ANOVA ANALYSIS BY BURN SEVERITY CLASS
 #chose to stop here
@@ -464,10 +479,37 @@ plot(temp_dif_immediate,
 
 # Plot histogram of temperature differences Across Creek Fire Mapping
 hist(values(temp_dif_immediate), 
-     main = "Distribution of Temperature Changes",
+     main = "Distribution of Immediate Temperature Changes",
      xlab = "Temperature Difference (°C)",
      col = "red4",
      breaks = 50)
 
+#P2
+# Plot before fire
+plot(temp_before, 
+     main = "Temperature Before Fire",
+     col = viridis(100),
+     axes = FALSE,
+     plg = list(title = "°C", title.adj = 0.2))
 
+# Plot after fire
+plot(temp_after, 
+     main = "Temperature After Fire",
+     col = viridis(100),
+     axes = FALSE,
+     plg = list(title = "°C", title.adj = 0.2))
+
+# Plot temperature difference
+plot(temp_diff, 
+     main = "Temperature Difference (After - Before)",
+     col = hcl.colors(100, "RdBu", rev = TRUE),
+     axes = FALSE,
+     plg = list(title = "°C", title.adj = 0.2))
+
+# Plot histogram of temperature differences
+hist(values(temp_diff), 
+     main = "Distribution of Temperature Changes",
+     xlab = "Temperature Difference (°C)",
+     col = "skyblue",
+     breaks = 50)
 
